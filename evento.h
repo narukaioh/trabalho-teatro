@@ -31,7 +31,14 @@ extern void iniciarEventos()
 }
 
 extern struct Evento buscarEvento(int idEvento) {
-  struct Evento evento = {1, "evento 1", 15, 25.5, "13:00", "20/05/20"};
+  struct Evento evento;
+	FILE *file;
+	int origem;
+	file = abrirArquivo("database/eventos","r");
+	origem = ((idEvento-1) * sizeof(struct Evento));
+	fseek(file, origem, SEEK_SET);
+	fread(&evento, sizeof(struct Evento), 1, file);
+	fecharArquivo(file);
   return evento;
 }
 
