@@ -8,7 +8,13 @@ extern struct Evento
   float preco;
   char hora[5];
   char data[10];
+  char mapaSala[6][6];
 } Evento;
+
+extern struct Poltrona {
+  int x;
+  int y;
+} Poltrona;
 
 extern void salvarEvento(struct Evento evento, char *arquivo)
 {
@@ -22,7 +28,7 @@ extern void salvarEvento(struct Evento evento, char *arquivo)
 extern void iniciarEventos()
 {
   int i;
-  struct Evento eventos[2] = {{1, "evento 1", 15, 25.5, "13:00", "20/05/20"}, {2, "evento 2", 30, 10, "17:00", "12/12/20"}};
+  struct Evento eventos[2] = {{1, "evento 1", 25, 25.5, "13:00", "20/05/20", {' ', '0', '1', '2', '3', '4','0', '-', '-', '-', '-', '-','1', '-', '-', '-', '-', '-','2', '-', '-', '-', '-', '-','3', '-', '-', '-', '-', '-','4', '-', '-', '-', '-', '-'}}, {2, "evento 2", 25, 10, "17:00", "12/12/20", {' ', '0', '1', '2', '3', '4','0', '-', '-', '-', '-', '-','1', '-', '-', '-', '-', '-','2', '-', '-', '-', '-', '-','3', '-', '-', '-', '-', '-','4', '-', '-', '-', '-', '-'}}};
   
   for (i=0; i<2; i++) {
     salvarEvento(eventos[i], "database/eventos");
@@ -115,8 +121,51 @@ extern void diminuirVaga(struct Evento n){
 	fecharArquivo(file);
 }
 
+void mostrarVagas(char poltronas[6][6], struct Poltrona poltrona) {
+  int i, j;
+  printf("============\n");
+  for (i = 0; i < 6; i++)
+  {
+    for (j = 0; j < 6; j++)
+    {
+      if (poltrona.x == i && poltrona.y == j) {
+       printf("[%c] ", poltronas[i][j]);
+      } else {
+       printf(" %c  ", poltronas[i][j]); 
+      }
+    }
+    printf("\n");
+  }
+  printf("============\n");
+}
+
+extern struct Poltrona escolherPoltronaAleatoria (struct Evento evento) {
+  struct Poltrona poltrona;
+  int x, y, sair = 0;
+
+  do {
+    x = rand() % 5;
+    y = rand() % 5;
+    if ((x > 0 && y > 0)) {
+      if (evento.mapaSala[x][y] == '-') {
+        poltrona.x = x;
+        poltrona.y = y;
+        sair = 1;
+      }
+    }
+  } while(sair == 0);
+
+  return poltrona;
+} 
+
+extern struct Evento marcarPoltrona (struct Evento evento, struct Poltrona poltrona) {
+  evento.mapaSala[poltrona.x][poltrona.y] = 'X';
+  return evento;
+}
+
 extern void venderIngresso() {
       struct Evento e;
+      struct Poltrona poltrona;
       int opcao;
       system("clear");
       listarEventos();
@@ -127,6 +176,9 @@ extern void venderIngresso() {
       scanf("%d", &opcao);
       if (opcao == 1) {
         system("clear");
+        poltrona = escolherPoltronaAleatoria(e);
+        e = marcarPoltrona(e, poltrona);
+        mostrarVagas(e.mapaSala, poltrona);
         diminuirVaga(e);
         imprimirDetalheEvento(buscarEvento(e.id));
         printf("\n ---- Venda efetuada com sucesso! ----\n\n");
