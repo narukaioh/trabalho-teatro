@@ -42,9 +42,7 @@ extern struct Evento buscarEvento(int idEvento) {
   return evento;
 }
 
-extern void imprimirEvento(int idEvento) {
-  struct Evento e = buscarEvento(idEvento);
-  system("clear");
+extern void imprimirEvento(struct Evento e) {
   printf("+---------------------------------------------------------------+\n");
   printf("| ID: %d       | Nome: %s\n", e.id, e.nome);
   printf("+---------------------------------------------------------------+\n");
@@ -56,4 +54,29 @@ extern void imprimirEvento(int idEvento) {
   printf("| Meia entrada:          %8.2f\n", e.preco / 2);
   printf("| Infatil Rede publica:  %8.2f\n", e.preco * 0);
   printf("+---------------------------------------------------------------+\n\n");
+}
+
+extern int escolherEstrutura(int opcao){
+	int tamanho;
+	if(opcao == 0){
+		tamanho = sizeof(struct Evento);
+	}
+	return tamanho;
+}
+
+extern int incrementarIdEvento(char *arquivo){
+	int id, t;
+	id = retornarTamanho(arquivo);
+	t = escolherEstrutura(0);
+	id = (id/t) + 1;
+	return id;
+}
+
+extern void listarEventos(){
+	int size, i;
+	size =  incrementarIdEvento("database/eventos") - 1;
+	struct Evento evento;
+	for(i=0; i<size; i++){
+    imprimirEvento(buscarEvento(i+1));
+	}
 }

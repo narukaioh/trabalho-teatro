@@ -13,3 +13,12 @@ extern void fecharArquivo(FILE *file){
 		printf("\n\n\t\tErro! Problema para fechar o arquivo\n\n");
 	}
 }
+
+extern int retornarTamanho(char *arquivo){
+	int tamanho;
+	FILE *file = abrirArquivo(arquivo,"r");
+	fseek(file, 0, SEEK_END);
+	tamanho = ftell(file);
+	fecharArquivo(file);
+	return tamanho;
+}
