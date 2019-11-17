@@ -5,6 +5,8 @@
 #define CADASTRAR_CLIENTE 2
 #define VENDER_INGRESSO 3
 
+#include "evento.h"
+
 void imprimirMenu();
 
 int main() {
@@ -22,6 +24,7 @@ void imprimirMenu() {
     {
     case CADASTRAR_EVENTO:
       printf("Cadastro de Evento: \n");
+      iniciarEventos();
       break;
     case CADASTRAR_CLIENTE:
       printf("Cadastro de Cliente: \n");
