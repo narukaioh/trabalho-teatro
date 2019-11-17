@@ -30,7 +30,7 @@ void imprimirMenu() {
       printf("Cadastro de Cliente: \n");
       break;
     case VENDER_INGRESSO:
-      printf("Venda de Ingressos: \n");
+      venderIngresso();
       break;
     default:
       sair = 1;

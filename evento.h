@@ -86,3 +86,49 @@ extern void listarEventos(){
     imprimirEvento(buscarEvento(i+1));
 	}
 }
+
+extern struct Evento escolherEvento() {
+  int opcao;
+  printf("Escolha o ID do evento que deseja vender: ");
+  scanf("%d", &opcao);
+  return buscarEvento(opcao);
+}
+
+extern void diminuirVaga(struct Evento n){
+	int size, i, origem = 0;
+	size = incrementarIdEvento("database/eventos") - 1;
+	struct Evento a[size];
+	FILE *file = abrirArquivo("database/eventos","r");
+	for(i=0; i<size; i++){
+		fseek(file,origem,SEEK_SET);
+		origem = origem + sizeof(struct Evento);
+		fread(&a[i],sizeof(struct Evento),1,file);
+		if(n.id == a[i].id){
+      n.vagas = n.vagas - 1;
+			fecharArquivo(file);
+			file = abrirArquivo("database/eventos","wb");
+			origem = origem - sizeof(struct Evento);
+			fseek(file,origem,SEEK_SET);
+			fwrite(&n, sizeof(struct Evento), 1, file);
+		}
+	}
+	fecharArquivo(file);
+}
+
+extern void venderIngresso() {
+      struct Evento e;
+      int opcao;
+      system("clear");
+      listarEventos();
+      e = escolherEvento();
+      system("clear");
+      imprimirDetalheEvento(e);
+      printf("\n ---- Deseja comprar ingresso? ----\n1) Sim\n2) Nao\n");
+      scanf("%d", &opcao);
+      if (opcao == 1) {
+        system("clear");
+        diminuirVaga(e);
+        imprimirDetalheEvento(buscarEvento(e.id));
+        printf("\n ---- Venda efetuada com sucesso! ----\n\n");
+      }
+}
