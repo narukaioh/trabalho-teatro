@@ -25,6 +25,7 @@ void imprimirMenu() {
     case CADASTRAR_EVENTO:
       printf("Cadastro de Evento: \n");
       iniciarEventos();
+      imprimirEvento(1);
       break;
     case CADASTRAR_CLIENTE:
       printf("Cadastro de Cliente: \n");

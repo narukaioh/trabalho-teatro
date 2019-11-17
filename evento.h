@@ -29,3 +29,24 @@ extern void iniciarEventos()
   }
 
 }
+
+extern struct Evento buscarEvento(int idEvento) {
+  struct Evento evento = {1, "evento 1", 15, 25.5, "13:00", "20/05/20"};
+  return evento;
+}
+
+extern void imprimirEvento(int idEvento) {
+  struct Evento e = buscarEvento(idEvento);
+  system("clear");
+  printf("+---------------------------------------------------------------+\n");
+  printf("| ID: %d       | Nome: %s\n", e.id, e.nome);
+  printf("+---------------------------------------------------------------+\n");
+  printf("| Hora: %s   | Data: %s | Vagas Disponiveis: %d\n", e.hora, e.data, e.vagas);
+  printf("+---------------------------------------------------------------+\n");
+  printf("| Precos                                                        |\n");
+  printf("+---------------------------------------------------------------+\n");
+  printf("| Integral:              %8.2f\n", e.preco);
+  printf("| Meia entrada:          %8.2f\n", e.preco / 2);
+  printf("| Infatil Rede publica:  %8.2f\n", e.preco * 0);
+  printf("+---------------------------------------------------------------+\n\n");
+}
