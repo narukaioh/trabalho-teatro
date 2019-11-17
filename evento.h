@@ -42,7 +42,7 @@ extern struct Evento buscarEvento(int idEvento) {
   return evento;
 }
 
-extern void imprimirEvento(struct Evento e) {
+extern void imprimirDetalheEvento(struct Evento e) {
   printf("+---------------------------------------------------------------+\n");
   printf("| ID: %d       | Nome: %s\n", e.id, e.nome);
   printf("+---------------------------------------------------------------+\n");
@@ -54,6 +54,12 @@ extern void imprimirEvento(struct Evento e) {
   printf("| Meia entrada:          %8.2f\n", e.preco / 2);
   printf("| Infatil Rede publica:  %8.2f\n", e.preco * 0);
   printf("+---------------------------------------------------------------+\n\n");
+}
+
+extern void imprimirEvento (struct Evento e) {
+  printf("+---------------------------------------------------------------+\n");
+  printf("| ID: %d       | Vagas: %d | Nome: %s\n", e.id, e.vagas, e.nome);
+  printf("+---------------------------------------------------------------+\n");
 }
 
 extern int escolherEstrutura(int opcao){
