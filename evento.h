@@ -1,3 +1,4 @@
+#include <string.h>
 #include "utils.h"
 
 extern struct Evento
@@ -28,7 +29,7 @@ extern void salvarEvento(struct Evento evento, char *arquivo)
 extern void iniciarEventos()
 {
   int i;
-  struct Evento eventos[2] = {{1, "evento 1", 25, 25.5, "13:00", "20/05/20", {' ', '0', '1', '2', '3', '4','0', '-', '-', '-', '-', '-','1', '-', '-', '-', '-', '-','2', '-', '-', '-', '-', '-','3', '-', '-', '-', '-', '-','4', '-', '-', '-', '-', '-'}}, {2, "evento 2", 25, 10, "17:00", "12/12/20", {' ', '0', '1', '2', '3', '4','0', '-', '-', '-', '-', '-','1', '-', '-', '-', '-', '-','2', '-', '-', '-', '-', '-','3', '-', '-', '-', '-', '-','4', '-', '-', '-', '-', '-'}}};
+  struct Evento eventos[2] = {{1, "evento 1", 25, 25.5, "13:00", "20/05/20", {' ', '0', '1', '2', '3', '4','A', '-', '-', '-', '-', '-','B', '-', '-', '-', '-', '-','C', '-', '-', '-', '-', '-','D', '-', '-', '-', '-', '-','E', '-', '-', '-', '-', '-'}}, {2, "evento 2", 25, 10, "17:00", "12/12/20", {' ', '0', '1', '2', '3', '4','A', '-', '-', '-', '-', '-','B', '-', '-', '-', '-', '-','C', '-', '-', '-', '-', '-','D', '-', '-', '-', '-', '-','E', '-', '-', '-', '-', '-'}}};
   
   for (i=0; i<2; i++) {
     salvarEvento(eventos[i], "database/eventos");
@@ -48,6 +49,23 @@ extern struct Evento buscarEvento(int idEvento) {
   return evento;
 }
 
+extern char obterCodigo (struct Poltrona p) {
+  char c = ' ';
+  if (p.x == 1) {
+    c = 'A';
+  }
+  if (p.x == 2) {
+    c = 'B';
+  }
+  if (p.x == 3) {
+    c = 'C';
+  }
+  if (p.x == 4) {
+    c = 'D';
+  }
+  return c;
+}
+
 extern void imprimirDetalheEvento(struct Evento e) {
   printf("+---------------------------------------------------------------+\n");
   printf("| ID: %d       | Nome: %s\n", e.id, e.nome);
@@ -60,6 +78,16 @@ extern void imprimirDetalheEvento(struct Evento e) {
   printf("| Meia entrada:          %8.2f\n", e.preco / 2);
   printf("| Infatil Rede publica:  %8.2f\n", e.preco * 0);
   printf("+---------------------------------------------------------------+\n\n");
+}
+
+extern void imprimirIngresso(struct Evento e, struct Poltrona p) {
+  printf("+---------------------------------------------------------------+\n");
+  printf("| ID: %d       | Nome: %s\n", e.id, e.nome);
+  printf("+---------------------------------------------------------------+\n");
+  printf("| Hora: %s   | Data: %s | Vagas Disponiveis: %d\n", e.hora, e.data, e.vagas);
+  printf("+---------------------------------------------------------------+\n");
+  printf("| Poltrona: %c%d                                                 |\n", obterCodigo(p), p.y);
+  printf("+---------------------------------------------------------------+\n");
 }
 
 extern void imprimirEvento (struct Evento e) {
@@ -123,7 +151,7 @@ extern void diminuirVaga(struct Evento n){
 
 void mostrarVagas(char poltronas[6][6], struct Poltrona poltrona) {
   int i, j;
-  printf("============\n");
+  printf("============== MAPA DA SALA ===============\n");
   for (i = 0; i < 6; i++)
   {
     for (j = 0; j < 6; j++)
@@ -136,7 +164,7 @@ void mostrarVagas(char poltronas[6][6], struct Poltrona poltrona) {
     }
     printf("\n");
   }
-  printf("============\n");
+  printf("============== MAPA DA SALA ===============\n");
 }
 
 extern struct Poltrona escolherPoltronaAleatoria (struct Evento evento) {
@@ -180,7 +208,8 @@ extern void venderIngresso() {
         e = marcarPoltrona(e, poltrona);
         mostrarVagas(e.mapaSala, poltrona);
         diminuirVaga(e);
-        imprimirDetalheEvento(buscarEvento(e.id));
+        // imprimirDetalheEvento(buscarEvento(e.id));
+        imprimirIngresso(buscarEvento(e.id), poltrona);
         printf("\n ---- Venda efetuada com sucesso! ----\n\n");
       }
 }
