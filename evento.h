@@ -17,6 +17,12 @@ extern struct Poltrona {
   int y;
 } Poltrona;
 
+struct Cliente {
+    int id;
+    int idade;
+    char profissao[150];
+} Cliente;
+
 extern void salvarEvento(struct Evento evento, char *arquivo)
 {
     FILE *file;
@@ -80,13 +86,14 @@ extern void imprimirDetalheEvento(struct Evento e) {
   printf("+---------------------------------------------------------------+\n\n");
 }
 
-extern void imprimirIngresso(struct Evento e, struct Poltrona p) {
+extern void imprimirIngresso(struct Evento e, struct Poltrona p, float precoIngresso) {
   printf("+---------------------------------------------------------------+\n");
   printf("| ID: %d       | Nome: %s\n", e.id, e.nome);
   printf("+---------------------------------------------------------------+\n");
   printf("| Hora: %s   | Data: %s | Vagas Disponiveis: %d\n", e.hora, e.data, e.vagas);
   printf("+---------------------------------------------------------------+\n");
-  printf("| Poltrona: %c%d                                                 |\n", obterCodigo(p), p.y);
+  printf("| Poltrona: %c%d                                                 |\n", obterCodigo(p), p.y - 1);
+  printf("| PRECO: %.2f                                                  |\n", precoIngresso);
   printf("+---------------------------------------------------------------+\n");
 }
 
@@ -191,10 +198,62 @@ extern struct Evento marcarPoltrona (struct Evento evento, struct Poltrona poltr
   return evento;
 }
 
+extern int temIdadePrivilegiada (int idade) {
+  if ((idade > 1 && idade < 13) || (idade >= 60)) {
+    return 1;
+  }
+  return 0;
+}
+
+extern int estudanteRedePublica (struct Cliente cliente) {
+  char profissao[150] = "Estudante Rede Publica";
+  if (strcmp(cliente.profissao, profissao) == 0) {
+    return 1;
+  }
+  return 0;
+}
+
+extern int aplicarMeiaEntrada (struct Cliente cliente) {
+  if ((temIdadePrivilegiada(cliente.idade)) || (strcmp(cliente.profissao, "Professor (Rede Publica)") == 0)) {
+    return 1;
+  }
+  return 0;
+}
+
+extern struct Cliente* listarClientes () {
+  int i;
+  struct Cliente * pClientes;
+  struct Cliente c[] = {{1, 8, "Estudante Rede Publica" }, { 2, 69, "Adulto"}, {3, 25, "Professor (Rede Publica)" }};
+  for (i=0; i < 3; i++) {
+    printf("#%d -- Idade: %d ----- Nome: %s \n", c[i].id, c[i].idade, c[i].profissao);
+  }
+  pClientes = c;
+  return pClientes;
+}
+
+extern float obterValorEntrada (struct Evento evento) {
+  int idCliente;
+  float precoEntrada = evento.preco;
+  struct Cliente * c = listarClientes();
+  printf("Qual o ID do cliente?\n");
+  scanf("%d", &idCliente);
+
+  if (aplicarMeiaEntrada(c[idCliente - 1]) == 1) {
+    precoEntrada = precoEntrada / 2;
+  } 
+  if (estudanteRedePublica(c[idCliente - 1]) == 1) {
+    precoEntrada = precoEntrada * 0;
+  }
+
+  return precoEntrada;
+}
+
 extern void venderIngresso() {
       struct Evento e;
       struct Poltrona poltrona;
       int opcao;
+      int tipoCliente;
+      float precoIngresso;
       system("clear");
       listarEventos();
       e = escolherEvento();
@@ -204,12 +263,13 @@ extern void venderIngresso() {
       scanf("%d", &opcao);
       if (opcao == 1) {
         system("clear");
+        precoIngresso = obterValorEntrada(e);
         poltrona = escolherPoltronaAleatoria(e);
         e = marcarPoltrona(e, poltrona);
         mostrarVagas(e.mapaSala, poltrona);
         diminuirVaga(e);
         // imprimirDetalheEvento(buscarEvento(e.id));
-        imprimirIngresso(buscarEvento(e.id), poltrona);
+        imprimirIngresso(buscarEvento(e.id), poltrona, precoIngresso);
         printf("\n ---- Venda efetuada com sucesso! ----\n\n");
       }
 }
